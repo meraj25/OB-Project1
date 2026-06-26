@@ -17,7 +17,7 @@ TaskRouter
 
 TaskRouter
     .route("/status/:status")
-    .get(findtaskByAssignee)
+    .get(findtaskByStatus)
 
 
 export default TaskRouter;

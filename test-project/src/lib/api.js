@@ -20,11 +20,11 @@ export const Api = createApi({
     }),
 
     getTaskByAssignee: builder.query({
-        query: (assigneeId) => `/task/${assigneeId}`
+        query: (assigneeId) => `/tasks/${assigneeId}`
     }),
 
     getTaskByStatus: builder.query({
-        query:(status) => `/task/status/${encodeURIComponent(status)}`
+        query:(status) => `/tasks/status/${encodeURIComponent(status)}`
     }),
 
     resisterUser: builder.mutation({
