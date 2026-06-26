@@ -1,8 +1,12 @@
-import { registerUser, loginUser, profile, logoutUser } from "../application/User";
+import {getAllUsers, registerUser, loginUser, profile, logoutUser } from "../application/User";
 import expess from "express";
 import { validateToken } from "../JWT";
 
 const UserRouter = expess.Router();
+
+UserRouter
+    .route('/')
+    .get(getAllUsers)
 
 UserRouter
     .route('/register')
