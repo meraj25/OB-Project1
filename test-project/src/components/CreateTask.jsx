@@ -103,16 +103,17 @@ function CreateTask({user}){
 
             await createTask(taskPayload);
             setSuccess(true);
+            setForm({
+                name: "",
+                description: "",
+                status: "To Do",
+                creator: user ?? "",
+                assignees: [],})
+
         } catch (error) {
             console.error("Failed to create task:", error);
         }
     }
-
-
-
-
-
-
 
     return(
         <Dialog open={open} onOpenChange={setOpen}>

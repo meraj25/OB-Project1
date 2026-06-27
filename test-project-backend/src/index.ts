@@ -5,10 +5,12 @@ import cookieParser from 'cookie-parser';
 import UserRouter from './api/User';
 import TaskRouter from './api/Task';
 import globalErrorHandlingMiddleware from './api/middleware/global-error-handling-middleware';
+import cors from "cors"
 
 const app = express();
 
 app.use(express.json());
+app.use(cors({origin:process.env.FRONTEND_URL}))
 app.use(cookieParser());
 
 app.use('/api/users', UserRouter);

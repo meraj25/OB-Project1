@@ -1,23 +1,17 @@
 import React from "react";
+import { useState } from "react";
 import Navigation from "@/components/Navigation";
 import { Button } from "@/components/ui/button";
-import TaskCard from "@/components/TaskCard";
-import { 
-    useGetAllTasksQuery,
-    useCreateTaskMutation,
-    useGetTaskByAssigneeQuery,
-    useGetTaskByStatusQuery,
-    useGetuserQuery,
- } from "@/lib/api";
- import CreateTask from "@/components/CreateTask";
-
+import { useGetuserQuery} from "@/lib/api";
+import CreateTask from "@/components/CreateTask";
+import CreatedbyMe from "@/components/MyTasks";
+import Tasks from "@/components/Tasks";
 export default function HomePage(){
     
-    const {data: tasks = [],isLoading,isError,error} = useGetAllTasksQuery();
 
-    const {data: user} = useGetuserQuery();
+    const {data: user , error ,isLoading} = useGetuserQuery();
+    const [activeView , setActiveView] = useState("all");
 
-    const createtask = useCreateTaskMutation();
 
     return(
         <div>
@@ -32,27 +26,30 @@ export default function HomePage(){
           </p>
         </div>
 
-        <div className="flex gap-3">
-           <div>
-            <Button>All Tasks</Button>
-            <Button variant="outline">My Tasks</Button>
-            </div>
-            <div>
+        <div className="flex items-center justify-between ">
+           <div className="flex gap-2">
+            <Button 
+            onClick={()=>setActiveView("all")}
+            variant={activeView=== "all" ? "default" : "outline"}>
+            All Tasks
+            </Button>
 
-                {/*filtering section */}
-
+            <Button 
+            onClick={()=>setActiveView("mine")}
+            variant={activeView === "mine"? "default" : "outline"}>
+            My Tasks
+            </Button>
             </div>
-            <div>
+
+            {activeView === "all" ? (<Tasks/>) : (<CreatedbyMe user={user}/>)}
+            
             <CreateTask user={user}/>
-            </div>
 
         </div>
 
-        <section>
-            {tasks.map((task) =>(
-                <TaskCard key={task._id} task={task}/>
-            ))};
-        </section>
+        
+
+        
       </main>
 
         </div>
