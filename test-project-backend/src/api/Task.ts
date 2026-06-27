@@ -1,5 +1,5 @@
 import express from "express"
-import { getallTasks,createTask,findtaskByAssignee,findtaskByStatus } from "../application/Task"
+import { getallTasks,createTask,findtaskByAssignee,findtaskByStatus,updateTask,deletetask } from "../application/Task"
 
 const TaskRouter = express.Router();
 
@@ -18,6 +18,11 @@ TaskRouter
 TaskRouter
     .route("/status/:status")
     .get(findtaskByStatus)
+
+TaskRouter
+    .route("/:id")
+    .patch(updateTask)
+    .delete(deletetask)
 
 
 export default TaskRouter;

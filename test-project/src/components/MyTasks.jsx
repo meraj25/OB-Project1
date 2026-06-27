@@ -2,6 +2,7 @@ import { useState } from "react";
 import TaskCard from "./TaskCard";
 import { useGetAllTasksQuery } from "@/lib/api";
 
+
 const task_per_page = 12;
 
 function CreatedbyMe({user}){
@@ -22,7 +23,7 @@ function CreatedbyMe({user}){
 
              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
                         {paginatedTasks.map((task) => (
-                            <TaskCard key={task._id} task={task} />
+                            <TaskCard key={task._id} task={task}  showDelete={true}/>
                         ))}
              </div>
 

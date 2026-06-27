@@ -13,7 +13,7 @@ const task_per_page = 12;
 const status_options = ["To Do", "In Progress", "Done"];
 
 
-function Tasks() {
+function Tasks({user}) {
 
     const [selectedAssigneeId, setSelectedAssigneeId] = useState("");
     const[selectedStatus, setSelectedStatus] = useState("") 
@@ -97,7 +97,7 @@ function Tasks() {
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
             {paginatedTasks.map((task) => (
-                <TaskCard key={task._id} task={task} />
+                <TaskCard key={task._id} task={task} user={user}/>
             ))}
         </div>
 

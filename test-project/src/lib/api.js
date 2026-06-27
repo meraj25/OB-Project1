@@ -27,6 +27,25 @@ export const Api = createApi({
         query:(status) => `/tasks/status/${encodeURIComponent(status)}`
     }),
 
+    updateTask: builder.mutation({
+    query: ({ id, ...body }) => ({
+        url: `/tasks/${id}`,
+        method: "PATCH",
+        body,
+    }),
+    }),
+    deleteTask: builder.mutation({
+    query: (id) => ({
+        url: `/tasks/${id}`,
+        method: "DELETE",
+    }),
+    
+}),
+
+
+
+
+
     resisterUser: builder.mutation({
         query:(body) =>({
             url: "/users/register",
@@ -62,6 +81,7 @@ export const Api = createApi({
 
 
 
+
   }),
 })
 
@@ -75,5 +95,7 @@ export const {
     useLoginUserMutation,
     useLogoutUserMutation,
     useResisterUserMutation,
+    useUpdateTaskMutation,
+    useDeleteTaskMutation
     
  } = Api

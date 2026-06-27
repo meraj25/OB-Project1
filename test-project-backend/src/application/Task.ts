@@ -10,7 +10,9 @@ const getallTasks = async (
 
 ) =>{
     try{
-        const tasks = await Task.find();
+        const tasks = await Task.find()
+        .populate("creator", "name")
+        .populate("assignees", "name");
         res.status(200).json(tasks);
     }catch(error){
       next(error)
@@ -90,7 +92,43 @@ const findtaskByStatus = async(
     }
 }
 
+const updateTask = async(
+    req:Request,
+    res:Response,
+    next:NextFunction
+) => {
+     try {
+    const task = await Task.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
+    if (!task) {
+      return res.status(404).json({message:"no task available for this"})
+
+    }
+    res.status(200).json(task);
+  } catch (error) {
+    next(error);
+  }
+}
+
+const deletetask = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const task = await Task.findByIdAndDelete(req.params.id);
+    if (!task) {
+      return res.status(404).json({message:"no task available "})
+    }
+    res.status(200).json({ message: "Product deleted successfully" });
+  } catch (error) {
+    next(error);
+  }
+};
 
 
 
-export {getallTasks,createTask,findtaskByAssignee,findtaskByStatus};
+
+
+export {getallTasks,createTask,findtaskByAssignee,findtaskByStatus,updateTask,deletetask};

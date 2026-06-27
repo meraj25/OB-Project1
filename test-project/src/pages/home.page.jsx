@@ -41,7 +41,7 @@ export default function HomePage(){
             </Button>
             </div>
 
-            {activeView === "all" ? (<Tasks/>) : (<CreatedbyMe user={user}/>)}
+            {activeView === "all" ? (<Tasks user={user}/>) : (<CreatedbyMe user={user}/>)}
             
             <CreateTask user={user}/>
 
