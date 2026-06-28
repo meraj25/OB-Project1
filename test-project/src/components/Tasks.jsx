@@ -8,8 +8,9 @@ import {
 
 import { Select,SelectContent,SelectItem,SelectTrigger,SelectValue, } from "./ui/select";
 import TaskCard from "./TaskCard";
+import { Button } from "./ui/button";
 
-const task_per_page = 12;
+const task_per_page = 6;
 const status_options = ["To Do", "In Progress", "Done"];
 
 
@@ -23,9 +24,13 @@ function Tasks({user}) {
 
     const [currentPage , setCurrentPage] = useState(1);
     
+    console.log("user is thama" , {userid:user?.id})
+    console.log(user);
 
-    const {data: filteredbyAssignee=[]} = useGetTaskByAssigneeQuery(selectedAssigneeId);
-    const{data: filteredbyStatus=[]} = useGetTaskByStatusQuery(selectedStatus);
+    const {data: filteredbyAssignee=[]} = useGetTaskByAssigneeQuery(selectedAssigneeId,{skip: !selectedAssigneeId});
+    const { data: filteredbyStatus = [] } = useGetTaskByStatusQuery(selectedStatus, {
+    skip: !selectedStatus
+});
 
     const displayTasks = () => {
         if(selectedAssigneeId && selectedStatus){
@@ -58,9 +63,10 @@ function Tasks({user}) {
         setSelectedStatus(value);
         setCurrentPage(1);
     }
-
+        
+ 
     return(
-        <div className="flex items-center gap-4  ">
+        <div className="space-y-6 ">
         <div className="flex items-center gap-2 ">
 
             <span className="text-sm font-medium">Filter by Assignee and Status:</span>
@@ -78,9 +84,9 @@ function Tasks({user}) {
                             ))}
                     </SelectContent>
             </Select>
-        </div>
+       
 
-        <div className="flex items-center gap-2">
+        
           <Select onValueChange={handleStatusChange}>
             <SelectTrigger className="w-[200px]">
               <SelectValue placeholder="Select status" />

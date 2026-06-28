@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useLoginUserMutation  } from "@/lib/api";
-import { Navigate } from "react-router";
+import { useNavigate } from "react-router";
 
 
 function LoginPage() {
@@ -12,7 +12,7 @@ const [loggedin, setLoggedin] = useState(false)
 
 const [loginUser,{isLoading}] = useLoginUserMutation();
 
-const naviagte = Navigate();
+const navigate = useNavigate();
 
 const validateUser = () => {
 
@@ -21,7 +21,7 @@ const validateUser = () => {
         newErrors.name = "Username Field is empty!"
     }
     if(!form.password){
-        newErrors.name = "Password is Required"
+        newErrors.password = "Password is Required"
     }
     setErrors(newErrors)
     return !newErrors.name && !newErrors.password
@@ -38,10 +38,10 @@ const handleSubmit = async (e) => {
         return;
 
     try{
-         await loginUser(form)
+         await loginUser(form).unwrap();
          console.log("user loggedin successfully!")
          setLoggedin(true);
-         naviagte("/")
+         setTimeout(() => navigate("/"), 4000)
     }catch(error){
         console.log(error)
         setErrors({ form: "Failed to create content. Try again." })
@@ -68,11 +68,15 @@ const handleSubmit = async (e) => {
 
           <div className="flex items-center justify-between pt-2">
             <Button type="submit" disabled={isLoading}>
-                {isLoading ? "Login..." : "LoggedIn"}
+                {isLoading ? "Login..." : "Login"}
             </Button>
             <a className="text-sm text-muted-foreground hover:underline" href="/signup">Create account</a>
           </div>
-           {loggedin && (alert("User loggedin successfully"))}
+           {loggedin && (
+            <p className="text-sm text-green-600">
+              Logged in! Redirecting...
+            </p>
+          )}
         </form>
       </div>
     </main>

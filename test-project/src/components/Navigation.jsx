@@ -1,7 +1,22 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router";
+import { useLogoutUserMutation } from "@/lib/api";
 
-export default function Navigation({ onCreate, onShowMine }) {
+
+export default function Navigation({ user }) {
+
+  const [logoutUser] = useLogoutUserMutation();
+  
+
+  const handleLogout = async () => {
+    try {
+      await logoutUser().unwrap();
+      window.location.href = "/login";
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
+
   return (
     <header className="mb-8 flex flex-col gap-5 rounded-[32px] bg-background/90 p-6 mr-5 ml-5 shadow-sm sm:flex-row sm:items-center sm:justify-between ">
       <div className="space-y-3">
@@ -16,25 +31,27 @@ export default function Navigation({ onCreate, onShowMine }) {
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-3">
-        <Link to={"/register"}>
-        <Button >
-          Register
-        </Button>
-        </Link>
-        
-        <Link to={"/login"}>
-        <Button >
-          Login
-        </Button>
-        </Link>
+      <div className="flex flex-wrap gap-3 items-center">
+        {user ? (
+          <div className="flex ">
+            <p className="text-sm font-medium mr-5 mt-1">
+              Welcome back, {user.name}
+            </p>
+            <Button onClick={handleLogout}>
+              Logout
+            </Button>
+          </div>
+        ) : (
+          <div>
+            <Link to="/register">
+              <Button>Register</Button>
+            </Link>
+            <Link to="/login">
+              <Button>Login</Button>
+            </Link>
+          </div>
+        )}
 
-        <Link to={"/tasksbyme"}>
-        <Button> 
-            Created by Me
-        </Button>
-        
-        </Link>
       </div>
     </header>
   );

@@ -9,13 +9,16 @@ import Tasks from "@/components/Tasks";
 export default function HomePage(){
     
 
-    const {data: user , error ,isLoading} = useGetuserQuery();
+    const {data:{user}={} , error } = useGetuserQuery();
+   
     const [activeView , setActiveView] = useState("all");
+
+    const [taskKey, setTaskKey] = useState(0);
 
 
     return(
         <div>
-            <Navigation/>
+            <Navigation user={user}/>
             <main className="px-5 py-8">
         <div className="mb-6">
           <h1 className="text-3xl font-bold tracking-tight text-foreground">
@@ -26,10 +29,13 @@ export default function HomePage(){
           </p>
         </div>
 
-        <div className="flex items-center justify-between ">
+        <div className="flex items-center justify-between mb-5">
            <div className="flex gap-2">
             <Button 
-            onClick={()=>setActiveView("all")}
+            onClick={()=>{
+              setActiveView("all")
+              setTaskKey(prev => prev + 1);}}
+            
             variant={activeView=== "all" ? "default" : "outline"}>
             All Tasks
             </Button>
@@ -37,17 +43,17 @@ export default function HomePage(){
             <Button 
             onClick={()=>setActiveView("mine")}
             variant={activeView === "mine"? "default" : "outline"}>
-            My Tasks
+           Tasks by me
             </Button>
             </div>
 
-            {activeView === "all" ? (<Tasks user={user}/>) : (<CreatedbyMe user={user}/>)}
+            
             
             <CreateTask user={user}/>
 
         </div>
 
-        
+        {activeView === "all" ? (<Tasks key={taskKey} user={user}/>) : (<CreatedbyMe  user={user}/>)}
 
         
       </main>

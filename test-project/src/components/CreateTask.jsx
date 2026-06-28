@@ -1,5 +1,5 @@
 import { Button } from "./ui/button"
-import { useState } from "react"
+import { useState,useEffect } from "react"
 import {
   Dialog,
   DialogClose,
@@ -35,43 +35,45 @@ function CreateTask({user}){
         name: "",
         description: "",
         status: "To Do",
-        creator: user ?? "",
         assignees: [],
     })
+    useEffect(() => {
+         console.log("user:", user)
+    if (user?.id) {
+        setForm((prev) => ({ ...prev, creator: user.id }))
+    }
+}, [user])
 
     const [errors, setErrors] = useState({
         name: "",
         description: "",
         status: "",
-        creator: "",
-        assignees: "",
+        assignees: [],
     })
     const [success , setSuccess] = useState(false)
     const [open, setOpen] = useState(false)
     const anchorRef = useComboboxAnchor()
+
+    console.log("user prop keys:", JSON.stringify(user))
 
     const validateTask = () => {
         const nextErrors = {
             name: "",
             description: "",
             status: "",
-            creator: "",
             assignees: "",
         }
-        if (!form.name?.trim()) {
+        if (!form.name) {
             nextErrors.name = "Task name is required."
         }
-        if (!form.description?.trim()) {
+        if (!form.description) {
             nextErrors.description = "Description is required."
-        }
-        if (!form.creator?.trim()) {
-            nextErrors.creator = "Creator is required."
         }
         if (!form.assignees || form.assignees.length === 0) {
             nextErrors.assignees = "Please assign at least one person."
         }
         setErrors(nextErrors)
-        return !nextErrors.name && !nextErrors.description && !nextErrors.creator && !nextErrors.assignees
+        return !nextErrors.name && !nextErrors.description && !nextErrors.assignees
     }
 
     const handleChange = (e) => {
@@ -87,22 +89,31 @@ function CreateTask({user}){
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+         console.log("form state:", form)
 
-        if (!validateTask()) return;
+        if (!validateTask()){
+             console.log("validation failed:", errors)
+             return;
+        } 
 
         try {
             const taskPayload = {
-                name: form.name.trim(),
-                description: form.description.trim(),
+                name: form.name,
+                description: form.description,
                 status: form.status,
-                creator: form.creator || user?._id || user,
+                creator: user?.id,
                 assignees: (Array.isArray(form.assignees) ? form.assignees : [form.assignees])
                     .filter(Boolean)
                     .map((assignee) => (typeof assignee === "string" ? assignee : assignee?._id ?? assignee)),
             };
 
+            console.log(taskPayload)
+
             await createTask(taskPayload);
             setSuccess(true);
+            if(success){
+                console.log("task created")
+            }
             setForm({
                 name: "",
                 description: "",
@@ -116,7 +127,7 @@ function CreateTask({user}){
     }
 
     return(
-        <Dialog open={open} onOpenChange={setOpen}>
+        <Dialog open={open} onOpenChange={setOpen} modal ={false}>
             <DialogTrigger asChild>
                 <Button>+ Create Task</Button>
             </DialogTrigger>
@@ -166,8 +177,7 @@ function CreateTask({user}){
                                 className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm"
                             >
                                 <option value="To Do">To Do</option>
-                                <option value="In Progress">In Progress</option>
-                                <option value="Done">Done</option>
+                                
                             </select>
                         </Field>
 
@@ -176,7 +186,7 @@ function CreateTask({user}){
                             <div ref={anchorRef} className="w-full">
                                 <Combobox
                                     items={users.map((userItem) => ({ label: userItem.name || userItem.username || userItem.email, value: userItem._id })) || []}
-                                    multiple
+                                    multiple    
                                     value={form.assignees}
                                     onValueChange={handleAssigneesChange}
                                 >
@@ -184,7 +194,7 @@ function CreateTask({user}){
                                         <ComboboxValue>
                                             {form.assignees.map((id) => {
                                                 const selectedUser = users.find((userItem) => userItem._id === id);
-                                                return <ComboboxChip key={id}>{selectedUser?.name || selectedUser?.username || selectedUser?.email || id}</ComboboxChip>;
+                                                return (<ComboboxChip key={id}>{selectedUser?.name || selectedUser?.username || selectedUser?.email || id}</ComboboxChip>);
                                             })}
                                         </ComboboxValue>
                                         <ComboboxChipsInput placeholder="Select assignees" />
@@ -207,12 +217,12 @@ function CreateTask({user}){
 
                     {success ? <p className="text-sm text-green-600">Task created successfully.</p> : null}
 
-                    <DialogFooter >
-                        <DialogClose asChild>
-                            <Button type="button" variant="outline">Cancel</Button>
-                        </DialogClose>
-                        <Button type="submit">Create task</Button>
-                    </DialogFooter>
+                    <div className="flex items-center justify-between pt-2">
+                        <Button type="submit" disabled={isLoading}>
+                        {isLoading ? "Creating" : "create"}
+                         </Button>
+               
+                    </div>
                 </form>
             </DialogContent>
         </Dialog>

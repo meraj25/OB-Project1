@@ -1,26 +1,29 @@
-import express from 'express';
-import connectDB from './infrastructure/db'
-import 'dotenv/config';
-import cookieParser from 'cookie-parser';
-import UserRouter from './api/User';
-import TaskRouter from './api/Task';
-import globalErrorHandlingMiddleware from './api/middleware/global-error-handling-middleware';
-import cors from "cors"
+    import cors from "cors"
+    import express from 'express';
+    import connectDB from './infrastructure/db'
+    import 'dotenv/config';
+    import cookieParser from 'cookie-parser';
+    import UserRouter from './api/User';
+    import TaskRouter from './api/Task';
+    import globalErrorHandlingMiddleware from './api/middleware/global-error-handling-middleware';
+    
 
-const app = express();
+    const app = express();
+     app.use(cors({origin:"http://localhost:5173",  credentials: true}));
 
-app.use(express.json());
-app.use(cors({origin:process.env.FRONTEND_URL}))
-app.use(cookieParser());
+    app.use(express.json());
+   
 
-app.use('/api/users', UserRouter);
-app.use('/api/tasks',TaskRouter)
+    app.use(cookieParser());
 
-connectDB();
+    app.use('/api/users', UserRouter);
+    app.use('/api/tasks',TaskRouter)
 
-app.use(globalErrorHandlingMiddleware);
+    connectDB();
 
-const PORT = process.env.PORT || 8000;
-app.listen(PORT,()=> {
-    console.log(`Server is running on port ${PORT}`);
-})
+    app.use(globalErrorHandlingMiddleware);
+
+    const PORT = process.env.PORT || 8000;
+    app.listen(PORT,()=> {
+        console.log(`Server is running on port ${PORT}`);
+    })

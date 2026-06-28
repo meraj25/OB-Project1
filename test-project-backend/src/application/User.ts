@@ -46,6 +46,8 @@ const loginUser = async(
             const accessToken = createToken(user);
             res.cookie("access-Token", accessToken, {
                 maxAge: 24 * 60 * 60 * 1000, 
+                httpOnly: true,
+                sameSite: "lax",
             })
             res.status(200).json({message: "User logged in successfully"});
          }
@@ -76,7 +78,10 @@ const profile = async (
     try{
         const accessToken = req.cookies["access-Token"];
 
-        const decoded = jwt.decode(accessToken) as {id: string; name: string};
+        const decoded = jwt.verify(
+            accessToken,
+            process.env.JWT_SECRET as string
+        ) as { id: string; name: string };
 
         res.status(200).json({
             user:{

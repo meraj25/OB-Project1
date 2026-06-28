@@ -26,8 +26,9 @@ const createTask = async (
 ) => {
     try{
         const newtask = CreateTaskDTO.safeParse(req.body);
-        if(!newtask.success){
-          return res.status(400).json({ error: "validation error"});
+       if(!newtask.success){
+            console.log("Zod validation error:", newtask.error.format()) 
+            return res.status(400).json({ error: newtask.error.format() }); 
         }
 
         const {name,description,status,creator,assignees} = newtask.data;
@@ -56,6 +57,8 @@ const findtaskByAssignee = async(
         const assigneeId = req.params.assigneeId as string;
 
         const filteredtasks = await Task.find({assignees: new mongoose.Types.ObjectId(assigneeId)})
+        .populate("creator", "name")
+        .populate("assignees", "name");
         
         if(filteredtasks.length === 0){
             return res.status(404).json({messsage: "No tasks have being created by this user"})
@@ -81,6 +84,8 @@ const findtaskByStatus = async(
         const filterstatus = req.params.status;
 
         const filteredtasks = await Task.find({status:filterstatus})
+        .populate("creator", "name")
+        .populate("assignees", "name");
 
         if(filteredtasks.length === 0){
             return res.status(404).json({message:"Please select a valid status"})

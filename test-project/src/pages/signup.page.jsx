@@ -1,25 +1,28 @@
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useResisterUserMutation } from "@/lib/api";
+import { useRegisterUserMutation } from "@/lib/api";
+import {useNavigate } from "react-router";
 
 function SignupPage() {
  
     const [form , setForm ] = useState({name: "" , "password": ""})
     const [errors, setErrors] = useState({name: "" , "password": ""})
-    const [success , setSuccess] = useState(false)
+    const [success , setSuccess] = useState(false);
 
-    const [registerUser,{isLoading} ] = useResisterUserMutation();
+    const navigate = useNavigate();
+
+    const [registerUser,{isLoading} ] = useRegisterUserMutation();
 
     const validateuser = () => {
         const validateError = {name: "", password: ""}
-        if(!validateError.name){
+        if(!form.name){
             validateError.name = "name is required"
         }
-        if(!validateError.password){
+        if(!form.password){
             validateError.password = "name is required"
         }
-        else if(validateError.password.length < 8){
+        else if(form.password.length < 8){
             validateError.password = "Password should contains atleast 8 characters"
         }
         setErrors(validateError);
@@ -40,7 +43,8 @@ function SignupPage() {
          console.log("user Registered!")
 
          setSuccess(true)
-         setTimeout(() => setSuccess(false), 4000)
+         
+         setTimeout(() => navigate("/login"),setSuccess(false), 4000)
 
     }catch(error){
         console.log(error)
@@ -69,7 +73,7 @@ function SignupPage() {
 
           <div className="flex items-center justify-between pt-2">
             <Button type="submit" disabled={isLoading}>
-                {isLoading ? "Registering" : "Registered"}
+                {isLoading ? "Registering" : "Register"}
             </Button>
             <a className="text-sm text-muted-foreground hover:underline" href="/login">Already have an account?</a>
           </div>

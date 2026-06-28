@@ -14,7 +14,7 @@ UserRouter
 
 UserRouter
     .route('/login')
-    .post(loginUser,validateToken);
+    .post(loginUser);
 
 UserRouter
     .route('/logout')
