@@ -16,6 +16,8 @@ const createToken = (user: TokenUser) => {
 }
 
 const validateToken = (req: Request, res: Response, next: NextFunction) => {
+    console.log("cookies:", req.cookies);          
+    console.log("secret:", process.env.JWT_SECRET); 
     const accessToken = req.cookies["access-Token"];
     
     if(!accessToken){

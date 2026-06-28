@@ -2,6 +2,7 @@ import { Request,Response,NextFunction } from "express";
 import User from "../infrastructure/db/entities/User";
 import bcrypt from "bcrypt";
 import {createToken} from "../JWT";   
+import * as jwt from "jsonwebtoken"
 
 const registerUser = async(
     req: Request,
@@ -45,6 +46,8 @@ const loginUser = async(
             const accessToken = createToken(user);
             res.cookie("access-Token", accessToken, {
                 maxAge: 24 * 60 * 60 * 1000, 
+                httpOnly: true,
+                sameSite: "lax",
             })
             res.status(200).json({message: "User logged in successfully"});
          }
@@ -73,10 +76,37 @@ const profile = async (
     next:NextFunction
 ) => {
     try{
-        res.status(200).json({message: "Welcome to the profile "})
+        const accessToken = req.cookies["access-Token"];
+
+        const decoded = jwt.verify(
+            accessToken,
+            process.env.JWT_SECRET as string
+        ) as { id: string; name: string };
+
+        res.status(200).json({
+            user:{
+                id:decoded.id,
+                name:decoded.name,
+            }
+        });
     }catch(error){
         next(error)
     }
 };
 
-export { registerUser, loginUser, logoutUser,profile };
+const getAllUsers = async (
+    req:Request,
+    res:Response,
+    next:NextFunction
+) => {
+    try{
+        const users = await User.find()
+        res.status(200).json(users);
+    }catch(error)
+    {
+        next(error)
+    }
+}
+
+
+export { registerUser, loginUser, logoutUser,profile ,getAllUsers};
