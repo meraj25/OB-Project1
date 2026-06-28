@@ -70,7 +70,7 @@ const handleSubmit = async (e) => {
             <Button type="submit" disabled={isLoading}>
                 {isLoading ? "Login..." : "Login"}
             </Button>
-            <a className="text-sm text-muted-foreground hover:underline" href="/signup">Create account</a>
+            <a className="text-sm text-muted-foreground hover:underline" href="/register">Create account</a>
           </div>
            {loggedin && (
             <p className="text-sm text-green-600">
