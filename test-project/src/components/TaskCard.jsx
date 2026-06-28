@@ -9,7 +9,7 @@ const status_options = ["To Do", "In Progress", "Done"];
 
 export default function TaskCard({ task, showDelete = false , user}) {
 
-  console.log("user id eka thama:", {userid:user?._id});
+  
   const { name, description, status, creator, assignees } = task ?? {};
   const assigneeList = Array.isArray(assignees) ? assignees : [];
 
@@ -21,11 +21,6 @@ export default function TaskCard({ task, showDelete = false , user}) {
     (assignee) =>(assignee?._id?.toString() ?? assignee?.toString()) === user?.id?.toString()
 );
 
-console.log("isAssignee check:", {
-    userId: user?.id,
-    assigneeList: assigneeList.map(a => a?._id?.toString() ?? a?.toString()),
-    isAssignee
-});
 
   const handleDelete = async () => {
     await deleteTask(task._id);  

@@ -24,7 +24,7 @@ function Tasks({user}) {
 
     const [currentPage , setCurrentPage] = useState(1);
     
-    console.log("user is thama" , {userid:user?.id})
+  
     console.log(user);
 
     const {data: filteredbyAssignee=[]} = useGetTaskByAssigneeQuery(selectedAssigneeId,{skip: !selectedAssigneeId});
